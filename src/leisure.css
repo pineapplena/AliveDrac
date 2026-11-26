@@ -1,0 +1,170 @@
+/* ---------- leisure / boredom ---------- */
+.life-leisure {
+  margin-bottom: 18px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(227, 157, 183, 0.07), transparent 34%),
+    rgba(12, 14, 20, 0.42);
+}
+
+.life-leisure-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.life-leisure-head h2 {
+  margin: 6px 0 4px;
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.life-leisure-head p {
+  color: var(--muted);
+  font-size: 10.5px;
+}
+
+.life-leisure-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 14px;
+}
+
+.boredom-panel,
+.leisure-latest {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.boredom-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--faint);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.boredom-label strong {
+  color: var(--amber);
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.boredom-track {
+  height: 5px;
+  margin: 8px 0 10px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+
+.boredom-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--lilac), var(--rose));
+  transition: width 0.4s ease;
+}
+
+.leisure-stats {
+  display: flex;
+  gap: 12px;
+  color: var(--faint);
+  font-size: 8.5px;
+}
+
+.leisure-candidates {
+  display: grid;
+  gap: 5px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.leisure-candidates > div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--faint);
+  font-size: 9.5px;
+}
+
+.leisure-candidates > div.chosen {
+  color: var(--text-soft);
+}
+
+.leisure-candidates i {
+  flex: none;
+  color: var(--faint);
+  font-size: 8px;
+  font-style: normal;
+}
+
+.leisure-candidates > div.chosen i {
+  color: var(--amber);
+}
+
+.leisure-kind {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(227, 157, 183, 0.12);
+  color: var(--rose);
+  font-size: 8.5px;
+}
+
+.leisure-latest h3 {
+  margin: 7px 0 6px;
+  color: var(--text);
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.leisure-latest > p {
+  color: var(--muted);
+  font-size: 10.5px;
+  line-height: 1.75;
+}
+
+.leisure-latest > a {
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--lilac);
+  font-size: 9.5px;
+  text-decoration: none;
+}
+
+.leisure-latest > a:hover {
+  color: var(--text-soft);
+}
+
+.leisure-latest footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  color: var(--faint);
+  font-size: 8.5px;
+}
+
+@media (max-width: 760px) {
+  .life-leisure {
+    padding: 15px;
+  }
+
+  .life-leisure-head,
+  .life-leisure-body {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}

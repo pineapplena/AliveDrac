@@ -1,0 +1,16 @@
+node_modules/
+dist/
+data/
+logs/
+_upstream/
+.env
+*.log
+.DS_Store
+
+.desktop-runtime/
+.nsis-tmp/
+.electron-builder-cache/
+
+release/
+imports/
+promo/

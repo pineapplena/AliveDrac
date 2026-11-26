@@ -1,0 +1,91 @@
+{
+  "name": "alivedrac",
+  "version": "1.5.0",
+  "private": true,
+  "type": "module",
+  "description": "A local-first character companionship app: she keeps living when you are away.",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:server": "tsx watch server/index.ts",
+    "dev:web": "vite",
+    "build": "vite build && node scripts/build-server.mjs",
+    "package:win": "node scripts/package-windows.mjs",
+    "package:update": "node scripts/package-update.mjs",
+    "desktop:dev": "node scripts/desktop-dev.mjs",
+    "package:desktop": "node scripts/package-desktop.mjs",
+    "start": "node dist/server/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test tests/safety-time.test.ts tests/schedule.test.ts tests/memory.test.ts tests/relationship.test.ts tests/notes.test.ts tests/vector.test.ts tests/absence.test.ts tests/settings.test.ts tests/vision.test.ts tests/expression.test.ts tests/followup.test.ts tests/learning.test.ts tests/computer.test.ts tests/leisure.test.ts tests/vision-retry.test.ts tests/memory-io.test.ts tests/chat-clear.test.ts tests/promise.test.ts tests/life-fragment.test.ts tests/screen.test.ts tests/live.test.ts tests/voice.test.ts tests/appearance.test.ts tests/agreements.test.ts tests/weekly-review.test.ts tests/proactive-state.test.ts",
+    "package:installer": "node scripts/package-installer.mjs"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.11",
+    "lucide-react": "^0.468.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "@vitejs/plugin-react": "^5.0.2",
+    "electron": "^45.4.1",
+    "electron-builder": "^26.18.0",
+    "esbuild": "^0.25.9",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.4"
+  },
+  "main": "desktop/main.cjs",
+  "build": {
+    "appId": "com.alive.companion",
+    "productName": "Alive",
+    "asar": false,
+    "directories": {
+      "output": "release/installer",
+      "buildResources": "build"
+    },
+    "files": [
+      "desktop/**/*",
+      "dist/**/*",
+      "seed/**/*",
+      "package.json",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": ".desktop-runtime",
+        "to": "runtime"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "Alive-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Alive",
+      "uninstallDisplayName": "Alive",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "allowElevation": false
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://updates.example.com/alive/"
+      }
+    ]
+  },
+  "author": "Alive"
+}
