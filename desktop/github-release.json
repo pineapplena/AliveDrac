@@ -1,4 +1,6 @@
 {
-  "owner": "",
-  "repo": ""
+  "owner": "pineapplena",
+  "repo": "AliveDrac",
+  "updateProvider": "generic",
+  "updateUrl": "https://gh-proxy.com/https://github.com/pineapplena/AliveDrac/releases/latest/download/"
 }

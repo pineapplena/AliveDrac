@@ -46,7 +46,13 @@ jobs:
           "tag=v$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           $env:ALIVE_RELEASE_VERSION = $version
           $repo = "${{ github.repository }}".Split("/")
-          $json = @{ owner = $repo[0]; repo = $repo[1] } | ConvertTo-Json
+          $mirror = "https://gh-proxy.com/https://github.com/$($repo[0])/$($repo[1])/releases/latest/download/"
+          $json = @{
+            owner = $repo[0]
+            repo = $repo[1]
+            updateProvider = "generic"
+            updateUrl = $mirror
+          } | ConvertTo-Json
           [IO.File]::WriteAllText(
             (Join-Path $PWD 'desktop/github-release.json'),
             $json,

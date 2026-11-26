@@ -1,0 +1,13 @@
+﻿Alive 1.5.2 更新补丁
+
+把这两个目录覆盖到 GitHub 仓库根目录：
+desktop/
+.github/
+
+然后提交并运行 Release Alive，版本填 1.5.2。
+
+修复内容：
+- 安装版固定使用 %APPDATA%\alivedrac\data，不再把 data 放在安装目录；
+- 自动更新使用 gh-proxy 镜像；
+- 关闭 electron-updater 的 console logger，避免 EPIPE 弹窗；
+- GitHub Actions 构建时自动写入镜像更新源。

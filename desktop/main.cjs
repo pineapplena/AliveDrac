@@ -30,18 +30,15 @@ const workspaceRoot = isDev
 const portableMode =
   process.env.ALIVE_DESKTOP_PORTABLE === '1' || Boolean(process.env.PORTABLE_EXECUTABLE_DIR);
 const exeDataDir = packagedApp ? path.join(path.dirname(app.getPath('exe')), 'data') : '';
-const useExeData =
-  Boolean(packagedApp) &&
-  (portableMode || fs.existsSync(path.join(exeDataDir, 'alive.db')));
+const useExeData = Boolean(packagedApp) && portableMode;
 
-// Portable builds always keep data next to Alive.exe. Installed builds do the
-// same when the user deliberately drops a data folder beside Alive.exe;
-// otherwise they use the normal per-user data directory.
+// Portable builds keep data next to Alive.exe. Installed builds always use the
+// per-user data directory so an installer update cannot delete user data.
 if (packagedApp && useExeData && !process.env.ALIVE_DATA_DIR) {
   try {
     app.setPath('userData', exeDataDir);
   } catch {
-    // Fall back to Electron's default userData if the folder is read-only.
+    // Fall back to Electron's default userData if the portable folder is read-only.
   }
 }
 
@@ -87,10 +84,12 @@ function readGithubDefaults() {
     const parsed = JSON.parse(fs.readFileSync(githubDefaultsPath, 'utf8'));
     return {
       owner: String(parsed.owner ?? ''),
-      repo: String(parsed.repo ?? '')
+      repo: String(parsed.repo ?? ''),
+      updateProvider: String(parsed.updateProvider ?? ''),
+      updateUrl: String(parsed.updateUrl ?? '')
     };
   } catch {
-    return { owner: '', repo: '' };
+    return { owner: '', repo: '', updateProvider: '', updateUrl: '' };
   }
 }
 
@@ -100,26 +99,32 @@ function readDesktopConfig() {
     const github = readGithubDefaults();
     const owner = String(parsed.githubOwner ?? github.owner ?? '');
     const repo = String(parsed.githubRepo ?? github.repo ?? '');
-    const configuredProvider = String(parsed.updateProvider ?? '');
     const hasGithub = Boolean(owner && repo);
-    const provider =
-      configuredProvider === 'github' || (!parsed.updateUrl && hasGithub)
-        ? 'github'
-        : configuredProvider || 'generic';
+    let provider = String(parsed.updateProvider ?? (hasGithub ? 'github' : 'generic'));
+    let updateUrl = String(parsed.updateUrl ?? '');
+
+    // Prefer the built-in mirror for builds that ship one. This migrates older
+    // GitHub-provider configs to the mirror without touching user data.
+    if (!updateUrl && github.updateUrl) {
+      updateUrl = github.updateUrl;
+      provider = 'generic';
+    }
+
     return {
       provider,
       githubOwner: owner,
       githubRepo: repo,
-      updateUrl: String(parsed.updateUrl ?? ''),
+      updateUrl,
       autoCheck: parsed.autoCheck !== false
     };
   } catch {
     const github = readGithubDefaults();
+    const hasGithub = Boolean(github.owner && github.repo);
     return {
-      provider: github.owner && github.repo ? 'github' : 'generic',
+      provider: github.updateUrl ? 'generic' : hasGithub ? 'github' : 'generic',
       githubOwner: github.owner,
       githubRepo: github.repo,
-      updateUrl: '',
+      updateUrl: github.updateUrl,
       autoCheck: true
     };
   }
@@ -130,17 +135,19 @@ function ensureDesktopConfig() {
     fs.mkdirSync(dataDir, { recursive: true });
     if (!fs.existsSync(desktopConfigPath)) {
       const github = readGithubDefaults();
+      const hasGithub = Boolean(github.owner && github.repo);
       fs.writeFileSync(
         desktopConfigPath,
         JSON.stringify(
           {
-            updateProvider: github.owner && github.repo ? 'github' : 'generic',
+            updateProvider: github.updateUrl ? 'generic' : hasGithub ? 'github' : 'generic',
             githubOwner: github.owner,
             githubRepo: github.repo,
-            updateUrl: '',
+            updateUrl: github.updateUrl,
             autoCheck: true,
-            note:
-              'GitHub 更新：填写 githubOwner / githubRepo，或把 updateProvider 改成 generic 并填写 updateUrl。'
+            note: github.updateUrl
+              ? 'GitHub Releases through the built-in mirror.'
+              : 'GitHub 更新：填写 githubOwner / githubRepo，或把 updateProvider 改成 generic 并填写 updateUrl。'
           },
           null,
           2
@@ -286,6 +293,12 @@ function stopServer() {
 
 function configureAutoUpdater() {
   if (!autoUpdater) return;
+  autoUpdater.logger = {
+    info: () => {},
+    warn: () => {},
+    error: () => {},
+    debug: () => {}
+  };
   autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = false;
   autoUpdater.on('error', (error) => {
